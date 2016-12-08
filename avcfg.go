@@ -16,7 +16,7 @@ import (
 
 
 var http_port_string = flag.String("http.port","8080", "HTTP Listen port")
-var property_location_string = flag.String("property.location","./data", "Location of json files")
+var property_location_string = flag.String("json.location","./data", "Location of json files")
 
 func check(e error) {
     if e != nil {
@@ -36,6 +36,20 @@ func main(){
 	// Create a cache with a default expiration time of 5 minutes, and which
     // purges expired items every 30 seconds
     propertyCache := cache.New(5*time.Minute, 30*time.Second)
+
+    http.HandleFunc("/service/json", func(w http.ResponseWriter, r *http.Request) {
+    	files, _ := ioutil.ReadDir(*property_location_string)
+	    for _, f := range files {
+	    	filename:=f.Name()
+	    	extension:= filepath.Ext(filename)
+			var name = filename[0:len(filename)-len(extension)]
+	    	fmt.Fprintf(w, "%s\n",name)	            
+	    }
+    })
+
+    http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+    	fmt.Fprintf(w, "OK")
+    })
 
 	http.HandleFunc("/json/", func(w http.ResponseWriter, r *http.Request) {
 
