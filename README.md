@@ -23,9 +23,9 @@ Considering we have this sample json configuration file called aws-integration-f
 
 We can fetch the properties in the following way:
 
-`"enable": http://localhost:8080/json/aws-integration-feature/enable`
-`key in credentials: http://localhost:8080/json/aws-integration-feature/credentials/key`
-`key.ttl.ms in caching: http://localhost:8080/json/aws-integration-feature/caching/key.ttl.ms`
+1. `enable: http://localhost:8080/json/aws-integration-feature/enable`
+1. `key in credentials: http://localhost:8080/json/aws-integration-feature/credentials/key`
+1. `key.ttl.ms in caching: http://localhost:8080/json/aws-integration-feature/caching/key.ttl.ms`
 
 The properties are cached for 5 minutes. If any json files are added or updated, there's no need to restart the server.
 
