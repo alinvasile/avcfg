@@ -8,7 +8,8 @@ import (
     "net/http"
     "html"
     "time"
-    "strings"    
+    "strings"  
+    "strconv"  
     "path/filepath"
     "github.com/antonholmquist/jason"
     "github.com/patrickmn/go-cache"    
@@ -18,10 +19,22 @@ import (
 var http_port_string = flag.String("http.port","8080", "HTTP Listen port")
 var property_location_string = flag.String("json.location","./data", "Location of json files")
 
+var cache_ttl_string = flag.String("cache.ttl","300", "Property cache TTL in seconds")
+var cache_purge_interval_string = flag.String("cache.purge.interval","30", "Property cache purge interval in seconds")
+
 func check(e error) {
     if e != nil {
         panic(e)
     }
+}
+
+func getPropertyIntValue(value string) (int64){
+	var p,err=strconv.ParseInt(value, 10, 64)
+	if err != nil {
+		fmt.Printf("Invalid integer value: %s\n", value)
+		panic(err)
+	}	
+	return p
 }
 
 
@@ -30,12 +43,19 @@ func main(){
 
 	var port=*http_port_string
 
+	ttl:=getPropertyIntValue(*cache_ttl_string)
+	purge_interval:=getPropertyIntValue(*cache_purge_interval_string)
+
+
 	fmt.Printf("HTTP Listen port: %s\n", port)
 	fmt.Printf("JSON location: %s\n", *property_location_string)
 
+	fmt.Printf("Cache TTL in seconds: %d\n", ttl)
+	fmt.Printf("Cache purge interval in seconds: %d\n", purge_interval)
+
 	// Create a cache with a default expiration time of 5 minutes, and which
     // purges expired items every 30 seconds
-    propertyCache := cache.New(5*time.Minute, 30*time.Second)
+    propertyCache := cache.New(time.Duration(ttl) * time.Second, time.Duration(purge_interval) * time.Second)
 
     http.HandleFunc("/service/json", func(w http.ResponseWriter, r *http.Request) {
     	files, _ := ioutil.ReadDir(*property_location_string)
