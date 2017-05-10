@@ -1,6 +1,12 @@
 # avcfg
 HTTP simple configuration server that exposes properties from a json file
 
+Start the http server:
+`server  -type http -http.port 8080`
+
+Start the tcp server:
+`server -type tcp -tcp.port 8087`
+
 Considering we have this sample json configuration file called aws-integration-feature.json:
 
 ```json
@@ -21,7 +27,7 @@ Considering we have this sample json configuration file called aws-integration-f
 }
 ```
 
-We can fetch the properties in the following way:
+We can fetch the properties in the following way with HTTP:
 
 1. `enable: http://localhost:8080/json/aws-integration-feature/enable`
 1. `key in credentials: http://localhost:8080/json/aws-integration-feature/credentials/key`
@@ -29,9 +35,14 @@ We can fetch the properties in the following way:
 
 The properties are cached for 5 minutes. If any json files are added or updated, there's no need to restart the server.
 
-General request pattern:
+General HTTP request pattern:
+
+`GET http://<IP address>:<PORT>/json/<JSON filename without extension>/<property path in the json file>`
+
+For tcp, there are two sample clients just to show the protocol:
+1. A golang-based client
+1. A java8 client
 
 
-`http://<IP address>:<PORT>/json/<JSON filename without extension>/<property path in the json file>`
 
 
