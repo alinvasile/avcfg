@@ -1,12 +1,14 @@
 package common
 
 import (
-	"net"
-	"io"
 	"fmt"
+	"io"
+	"net"
 )
 
-func readApiVersion(conn net.Conn) (uint16, error){
+const API_VERSION uint16 = 0x01
+
+func readApiVersion(conn net.Conn) (uint16, error) {
 	versionBuf := make([]byte, 2)
 	_, err := conn.Read(versionBuf)
 	if err != nil {
@@ -17,7 +19,7 @@ func readApiVersion(conn net.Conn) (uint16, error){
 	return versionData, nil
 }
 
-func readMessageLength(conn net.Conn) (uint32, error){
+func readMessageLength(conn net.Conn) (uint32, error) {
 	buf := make([]byte, 4)
 	_, err := conn.Read(buf)
 	if err != nil {
@@ -28,8 +30,7 @@ func readMessageLength(conn net.Conn) (uint32, error){
 	return data, nil
 }
 
-
-func readMessageBody(conn net.Conn, length uint32) (string, error){
+func readMessageBody(conn net.Conn, length uint32) (string, error) {
 	buf := make([]byte, length)
 
 	reqLen := 0
@@ -48,7 +49,7 @@ func readMessageBody(conn net.Conn, length uint32) (string, error){
 	return string(buf), nil
 }
 
-func readMessage(conn net.Conn) (string, error) {
+func ReadMessage(conn net.Conn) (string, error) {
 	versionData, err := readApiVersion(conn)
 
 	if err != nil {
@@ -70,4 +71,27 @@ func readMessage(conn net.Conn) (string, error) {
 	}
 
 	return readMessageBody, nil
+}
+
+func WriteMessage(conn net.Conn, msg string) error {
+	version, err := uint16ToByteArr(API_VERSION)
+	_, err = conn.Write(version)
+	if err != nil {
+		return err
+	}
+	// Send the size of the message to be sent
+	bytes, err := int32ToByteArr(uint32(len([]byte(msg))))
+	if err != nil {
+		return err
+	}
+	_, err = conn.Write(bytes)
+	if err != nil {
+		return err
+	}
+	// Send the message
+	_, err = conn.Write([]byte(msg))
+	if err != nil {
+		return err
+	}
+	return nil
 }

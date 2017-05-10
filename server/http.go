@@ -1,22 +1,22 @@
 package main
 
 import (
-	"github.com/patrickmn/go-cache"
-	"net/http"
-	"io/ioutil"
-	"path/filepath"
 	"fmt"
+	"github.com/patrickmn/go-cache"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"path/filepath"
 )
 
-func startHttpServer(propertyCache *cache.Cache, port string){
+func startHttpServer(propertyCache *cache.Cache, port string) {
 	http.HandleFunc("/service/json", func(w http.ResponseWriter, r *http.Request) {
 		files, _ := ioutil.ReadDir(*property_location_string)
 		for _, f := range files {
-			filename:=f.Name()
-			extension:= filepath.Ext(filename)
-			var name = filename[0:len(filename)-len(extension)]
-			fmt.Fprintf(w, "%s\n",name)
+			filename := f.Name()
+			extension := filepath.Ext(filename)
+			var name = filename[0 : len(filename)-len(extension)]
+			fmt.Fprintf(w, "%s\n", name)
 		}
 	})
 
@@ -26,12 +26,12 @@ func startHttpServer(propertyCache *cache.Cache, port string){
 
 	http.HandleFunc("/json/", func(w http.ResponseWriter, r *http.Request) {
 
-		fullUrl:=r.URL.Path
+		fullUrl := r.URL.Path
 
 		value, err := readPropertyThroughCache(propertyCache, fullUrl)
 
 		if err != nil {
-			errorHandler(w,r,http.StatusNotFound, fmt.Sprintf("Error reading: %s", err.Error()))
+			errorHandler(w, r, http.StatusNotFound, fmt.Sprintf("Error reading: %s", err.Error()))
 			return
 		}
 
@@ -39,5 +39,5 @@ func startHttpServer(propertyCache *cache.Cache, port string){
 
 	})
 
-	log.Fatal(http.ListenAndServe(":" + port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
