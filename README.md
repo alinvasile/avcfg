@@ -43,6 +43,10 @@ For tcp, there are two sample clients just to show the protocol:
 1. A golang-based client
 1. A java8 client
 
+Docker images:
+1. http server: `docker.io/alinvasile/avcfg-http-server` (docker file in `docker/avcfg-http-server/Dockerfile`)
+2. tcp server: `docker.io/alinvasile/avcfg-tcp-server` (docker file in `docker/avcfg-tcp-server/Dockerfile`)
+
 
 
 
