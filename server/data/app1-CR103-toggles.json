@@ -1,0 +1,15 @@
+{
+	"feature.enabled:":"true",
+	"stats":{
+		"enabled":"true",
+		"log-to-file": "true",
+		"log-to-udp": "false",
+		"log-to-es":"false"
+	},
+	"caching":{
+		"enabled":"false",
+		"ttl.ms": "10000",
+		"idle.ms": "600"
+	}	
+
+}
