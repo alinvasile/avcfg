@@ -1,0 +1,15 @@
+{
+	"enable": "true",
+	"credentials":{
+		"key":"ABffds7yggf",
+		"secret":"hb65555"		
+	},
+	"location":{
+		"region":"eu-west-1",
+		"bucket":"my-log-bucket"
+	},
+	"caching":{
+		"key.ttl.ms":"120000",
+		"key.idle.ms":"60000"
+	}
+}

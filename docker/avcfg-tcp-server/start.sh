@@ -1,0 +1,1 @@
+./server -type tcp -tcp.port 8087 > ./logs/server.log 2>&1

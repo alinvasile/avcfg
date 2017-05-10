@@ -1,0 +1,1 @@
+./server -type http -http.port 8080 > ./logs/server.log 2>&1
