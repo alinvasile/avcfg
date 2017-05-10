@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"log"
 )
 
 const API_VERSION uint16 = 0x01
@@ -45,6 +46,7 @@ func readMessageBody(conn net.Conn, length uint32) (string, error) {
 		if err != nil {
 			return "", fmt.Errorf("Error reading: %s", err.Error())
 		}
+		log.Printf("read: %v", reqLen)
 	}
 	return string(buf), nil
 }
@@ -60,10 +62,14 @@ func ReadMessage(conn net.Conn) (string, error) {
 		return "", fmt.Errorf("Unsupported API version: %s", fmt.Sprint(versionData))
 	}
 
+	//log.Printf("Api version: %v", versionData)
+
 	lenData, err := readMessageLength(conn)
 	if err != nil {
 		return "", err
 	}
+
+	//log.Printf("Len data: %v", lenData)
 
 	readMessageBody, err := readMessageBody(conn, lenData)
 	if err != nil {
